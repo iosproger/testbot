@@ -26,7 +26,9 @@
             }
 
             const formData = new FormData();
-            formData.append("file", file);
+            // Use "document" as required by Telegram API
+            formData.append("chat_id", "@testmedicalfortest"); 
+            formData.append("document", file);
 
             fetch(`https://api.telegram.org/bot7594468663:AAGODTnlHItEucysuLX59AEOQX_HxHG08T8/sendDocument`, {
                 method: "POST",
@@ -35,7 +37,10 @@
                 if (response.ok) {
                     alert("File sent successfully!");
                 } else {
-                    alert("Failed to send the file.");
+                    response.json().then(err => {
+                        console.error("Error Response:", err);
+                        alert("Failed to send the file: " + err.description);
+                    });
                 }
             }).catch(error => {
                 console.error("Error:", error);
@@ -43,7 +48,6 @@
             });
         }
 
-        // Initialize Telegram WebApp
         tg.ready();
     </script>
 </body>
