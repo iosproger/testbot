@@ -16,41 +16,51 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-
-        function sendFile() {
+    
+        async function sendFile() {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
-
+    
             if (!file) {
                 alert("Please choose a file first.");
                 return;
             }
-
+    
             const formData = new FormData();
-            formData.append("chat_id", tg.initDataUnsafe.user.id);  // Send back to the user’s bot chat
+            const chatId = tg.initDataUnsafe?.user?.id || YOUR_CHAT_ID_HERE; // Replace if needed
+            
+            if (!chatId) {
+                alert("Failed to get chat ID. Please make sure you started the bot.");
+                console.error("chat_id missing");
+                return;
+            }
+    
+            formData.append("chat_id", chatId);
             formData.append("document", file);
-
-            fetch(`https://api.telegram.org/bot7594468663:AAGODTnlHItEucysuLX59AEOQX_HxHG08T8/sendDocument`, {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    alert("File sent successfully!");
-                    tg.close(); // Close the WebApp
+    
+            try {
+                const response = await fetch(`https://api.telegram.org/bot7594468663:AAGODTnlHItEucysuLX59AEOQX_HxHG08T8/sendDocument`, {
+                    method: "POST",
+                    body: formData,
+                });
+    
+                const result = await response.json();
+                console.log(result); // Log response for debugging
+    
+                if (result.ok) {
+                    alert("✅ File sent successfully!");
+                    tg.close(); // Close the Web App
                 } else {
-                    console.error(data);
-                    alert("Failed to send the file: " + data.description);
+                    alert("Failed to send the file: " + result.description);
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("Error:", error);
                 alert("An error occurred while sending the file.");
-            });
+            }
         }
-
+    
         tg.ready();
     </script>
+
 </body>
 </html>
