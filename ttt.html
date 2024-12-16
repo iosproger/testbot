@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Selection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    /* Container for the menu */
+    .menu {
+      display: grid;
+      grid-template-columns: 1fr; /* Default to 1 column */
+      gap: 20px; /* Space between cards */
+      padding: 20px;
+      width: 100%;
+      max-width: 800px; /* Restrict maximum width for better centering */
+    }
+
+    /* Style for each card */
+    .card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    /* Hover effect for cards */
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Image styling inside the card */
+    .card img {
+      width: 100%;
+      max-width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    /* Heading inside the card */
+    .card h4 {
+      font-size: 1.2em;
+      margin: 10px 0;
+      color: #007bff;
+    }
+
+    /* Paragraph inside the card */
+    .card p {
+      font-size: 1em;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
+    /* Button inside the card */
+    .card button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      color: white;
+      background: #28a745;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    /* Remove button */
+    .card button.remove {
+      background: #dc3545;
+    }
+
+    /* Hover effect for buttons */
+    .card button:hover {
+      background: #218838;
+    }
+
+    .card button.remove:hover {
+      background: #c82333;
+    }
+
+    /* Order button outside the cards */
+    .order-btn {
+      margin: 20px 0;
+      padding: 15px 30px;
+      font-size: 1.1em;
+      color: white;
+      background: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .order-btn:hover {
+      background: #0056b3;
+    }
+
+    /* Form styling */
+    .form {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      margin: 20px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .form input, .form button {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 1em;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    /* Focus states for inputs and buttons */
+    .form input:focus, .form button:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .form button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .form button:hover {
+      background: #0056b3;
+    }
+
+    /* Mobile-first responsive adjustments */
+    @media (min-width: 300px) {
+      .menu {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium and larger screens */
+      }
+
+      .card img {
+        max-width: 150px;
+        height: 150px;
+      }
+
+      .form {
+        padding: 15px;
+      }
+
+      .form input, .form button {
+        font-size: 0.9em;
+      }
+    }
+</style>
+
+</head>
+<body>
+  <div class="menu">
+  <!-- Example service items -->
+  <div class="card" data-service="Service 1">
+    <img src="images/img1.jpeg" alt="Service 1">
+    <h4>Tekshirish</h4>
+    <p>7000 so'm</p>
+    <button class="add">Add</button>
+  </div>
+  <div class="card" data-service="Service 2">
+    <img src="images/img2.jpg" alt="Service 2">
+    <h4>Ukol</h4>
+    <p>3000 so'm</p>
+    <button class="add">Add</button>
+  </div>
+  <div class="card" data-service="Service 3">
+    <img src="images/img3.png" alt="Service 3">
+    <h4>Kapilnitsiya</h4>
+    <p>5000 so'm</p>
+    <button class="add">Add</button>
+  </div>
+  <div class="card" data-service="Service 4">
+    <img src="images/img4.jpg" alt="Service 4">
+    <h4>Muolaja</h4>
+    <p>3000 so'm</p>
+    <button class="add">Add</button>
+  </div>
+</div>
+
+  <button class="order-btn" style="display: none;">Order</button>
+
+  <div class="form">
+    <h2>Fill your details</h2>
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="text" id="surname" placeholder="Username" required>
+    <input type="number" id="age" placeholder="Age" required>
+    <select id="gender" placeholder="gender">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    </select>
+    <input type="tel" id="number" placeholder="Phone Number" required>
+    <input type="text" id="address" placeholder="Address" required>
+    <input type="date" id="date" required>
+    <input type="time" id="time" required>
+    <button id="send">Send</button>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+    // Initialize Telegram WebApp API
+
+
+    const menu = document.querySelector('.menu');
+    const orderBtn = document.querySelector('.order-btn');
+    const form = document.querySelector('.form');
+    let selectedServices = [];
+
+    menu.addEventListener('click', (e) => {
+      if (e.target.classList.contains('add')) {
+        const card = e.target.closest('.card');
+        const serviceName = card.dataset.service;
+        selectedServices.push(serviceName);
+        e.target.textContent = 'Remove';
+        e.target.classList.remove('add');
+        e.target.classList.add('remove');
+        orderBtn.style.display = 'block';
+      } else if (e.target.classList.contains('remove')) {
+        const card = e.target.closest('.card');
+        const serviceName = card.dataset.service;
+        selectedServices = selectedServices.filter(s => s !== serviceName);
+        e.target.textContent = 'Add';
+        e.target.classList.remove('remove');
+        e.target.classList.add('add');
+        if (selectedServices.length === 0) {
+          orderBtn.style.display = 'none';
+        }
+      }
+    });
+
+    orderBtn.addEventListener('click', () => {
+      menu.style.display = 'none';
+      form.style.display = 'flex';
+    });
+
+    document.getElementById('send').addEventListener('click', () => {
+      const name = document.getElementById('name').value.trim();
+      const username = document.getElementById('surname').value.trim();
+      const age = document.getElementById('age').value.trim();
+      const number = document.getElementById('number').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const date = document.getElementById('date').value.trim();
+      const time = document.getElementById('time').value.trim();
+      const gender = document.getElementById('gender').value.trim();
+
+      if (name && username && age && number && address && date) {
+        const data = {
+          services: selectedServices, // Ensure this array is populated elsewhere in your script
+          name,
+          username,
+          age,
+          number,
+          address,
+          date,
+          time,
+          gender,
+        };
+
+        // Check if Telegram WebApp object is available
+        if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+          Telegram.WebApp.sendData(JSON.stringify(data));
+        } else {
+          alert("Telegram WebApp is not initialized. Make sure you're running this within a Telegram Web App.");
+        }
+      } else {
+        alert('Please fill in all fields.');
+      }
+    });
+
+  </script>
+</body>
+</html>
