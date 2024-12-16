@@ -209,17 +209,18 @@
   <div class="form">
     <h2>Fill your details</h2>
     <input type="text" id="name" placeholder="Name" required>
-    <input type="text" id="surname" placeholder="Surname" required>
+    <input type="text" id="surname" placeholder="Username" required>
     <input type="number" id="age" placeholder="Age" required>
-    <label>Select gender  <select id="gender" placeholder="gender">
+    <select id="gender" placeholder="gender">
         <option value="Male">Male</option>
         <option value="Female">Female</option>
-    </select></label>
-
+    </select>
     <input type="tel" id="number" placeholder="Phone Number" required>
     <input type="text" id="address" placeholder="Address" required>
     <input type="date" id="date" required>
     <input type="time" id="time" required>
+    <label for="file">Upload File (JPG, PNG, PDF):</label>
+    <input type="file" id="file" accept=".jpg,.jpeg,.png,.pdf">
     <button id="send">Send</button>
   </div>
 
@@ -260,21 +261,22 @@
       form.style.display = 'flex';
     });
 
-    document.getElementById('send').addEventListener('click', () => {
+     document.getElementById('send').addEventListener('click', () => {
       const name = document.getElementById('name').value.trim();
-      const surname = document.getElementById('surname').value.trim();
+      const username = document.getElementById('surname').value.trim();
       const age = document.getElementById('age').value.trim();
       const number = document.getElementById('number').value.trim();
       const address = document.getElementById('address').value.trim();
       const date = document.getElementById('date').value.trim();
       const time = document.getElementById('time').value.trim();
       const gender = document.getElementById('gender').value.trim();
+      const fileInput = document.getElementById('file');
 
-      if (name && surname && age && number && address && date) {
+      if (name && username && age && number && address && date) {
         const data = {
-          services: selectedServices, // Ensure this array is populated elsewhere in your script
+          services: selectedServices,
           name,
-          surname,
+          username,
           age,
           number,
           address,
@@ -283,11 +285,34 @@
           gender,
         };
 
-        // Check if Telegram WebApp object is available
-        if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-          Telegram.WebApp.sendData(JSON.stringify(data));
+        // Handle file upload
+        if (fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+
+          reader.onload = () => {
+            const base64File = reader.result.split(',')[1]; // Remove the "data:*/*;base64," prefix
+            data.file = {
+              name: file.name,
+              content: base64File,
+            };
+
+            // Send data to Telegram WebApp
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+              Telegram.WebApp.sendData(JSON.stringify(data));
+            } else {
+              alert("Telegram WebApp is not initialized. Make sure you're running this within a Telegram Web App.");
+            }
+          };
+
+          reader.readAsDataURL(file);
         } else {
-          alert("Telegram WebApp is not initialized. Make sure you're running this within a Telegram Web App.");
+          // Send data without a file
+          if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+            Telegram.WebApp.sendData(JSON.stringify(data));
+          } else {
+            alert("Telegram WebApp is not initialized. Make sure you're running this within a Telegram Web App.");
+          }
         }
       } else {
         alert('Please fill in all fields.');
