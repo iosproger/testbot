@@ -3,85 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Web App</title>
+    <title>Telegram Bot File Uploader</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .form-container {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #0078D4;
-            color: white;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Submit Your Information</h2>
-        <form id="webForm">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-
-            <label for="file">Upload File (JPG, PNG, PDF):</label>
-            <input type="file" id="file" name="file" accept=".jpg,.png,.pdf" required>
-
-            <button type="submit">Send</button>
-        </form>
-    </div>
+    <h1>Upload a File</h1>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" accept=".jpg,.png,.pdf" required>
+        <button type="submit">Send</button>
+    </form>
 
     <script>
-        // Initialize Telegram Web App
-        Telegram.WebApp.init();
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Expand the WebApp
 
-        // Handle form submission
-        document.getElementById('webForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+        document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-            // Get the form data
-            const name = document.getElementById('name').value;
-            const fileInput = document.getElementById('file');
-            const file = fileInput.files[0];
+            const fileInput = document.getElementById("fileInput");
+            if (!fileInput.files.length) {
+                alert("Please select a file first!");
+                return;
+            }
 
-            // Create a FormData object to send the data
             const formData = new FormData();
-            formData.append('name', name);
-            formData.append('file', file);
+            formData.append("file", fileInput.files[0]);
+            formData.append("user_id", tg.initDataUnsafe.user.id);
 
-            // Send the form data to the bot
-            fetch('https://yourserver.com/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Your form has been submitted successfully!');
-                    Telegram.WebApp.close();
-                } else {
-                    alert('Something went wrong. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error submitting form. Please try again.');
-            });
+            try {
+                const response = await fetch("/upload/", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                alert("An error occurred: " + error.message);
+            }
         });
     </script>
 </body>
