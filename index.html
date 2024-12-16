@@ -20,29 +20,31 @@
         function sendFile() {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
+
             if (!file) {
                 alert("Please choose a file first.");
                 return;
             }
 
             const formData = new FormData();
-            // Use "document" as required by Telegram API
-            formData.append("chat_id", "@testmedicalfortest"); 
+            formData.append("chat_id", tg.initDataUnsafe.user.id);  // Send back to the user’s bot chat
             formData.append("document", file);
 
             fetch(`https://api.telegram.org/bot7594468663:AAGODTnlHItEucysuLX59AEOQX_HxHG08T8/sendDocument`, {
                 method: "POST",
                 body: formData
-            }).then(response => {
-                if (response.ok) {
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
                     alert("File sent successfully!");
+                    tg.close(); // Close the WebApp
                 } else {
-                    response.json().then(err => {
-                        console.error("Error Response:", err);
-                        alert("Failed to send the file: " + err.description);
-                    });
+                    console.error(data);
+                    alert("Failed to send the file: " + data.description);
                 }
-            }).catch(error => {
+            })
+            .catch(error => {
                 console.error("Error:", error);
                 alert("An error occurred while sending the file.");
             });
