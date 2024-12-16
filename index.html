@@ -261,7 +261,7 @@
 
     document.getElementById('send').addEventListener('click', () => {
       const name = document.getElementById('name').value.trim();
-      const username = document.getElementById('surname').value.trim();
+      const surname = document.getElementById('surname').value.trim();
       const age = document.getElementById('age').value.trim();
       const number = document.getElementById('number').value.trim();
       const address = document.getElementById('address').value.trim();
@@ -269,11 +269,11 @@
       const time = document.getElementById('time').value.trim();
       const gender = document.getElementById('gender').value.trim();
 
-      if (name && username && age && number && address && date) {
+      if (name && surname && age && number && address && date) {
         const data = {
           services: selectedServices, // Ensure this array is populated elsewhere in your script
           name,
-          username,
+          surname,
           age,
           number,
           address,
