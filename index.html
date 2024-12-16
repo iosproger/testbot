@@ -17,6 +17,11 @@
     <script>
         const tg = window.Telegram.WebApp;
     
+        tg.ready(); // Initialize Telegram Web App
+    
+        // Debug Telegram Initialization
+        console.log("Telegram WebApp Data:", tg.initDataUnsafe);
+    
         async function sendFile() {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
@@ -26,41 +31,40 @@
                 return;
             }
     
-            const formData = new FormData();
-            const chatId = tg.initDataUnsafe?.user?.id || YOUR_CHAT_ID_HERE; // Replace if needed
-            
+            const chatId = tg.initDataUnsafe?.user?.id; // Get the chat ID
+            console.log("Chat ID:", chatId);
+    
             if (!chatId) {
-                alert("Failed to get chat ID. Please make sure you started the bot.");
-                console.error("chat_id missing");
+                alert("Failed to retrieve chat ID. Make sure you started the bot.");
                 return;
             }
     
+            const formData = new FormData();
             formData.append("chat_id", chatId);
             formData.append("document", file);
     
             try {
-                const response = await fetch(`https://api.telegram.org/bot7594468663:AAGODTnlHItEucysuLX59AEOQX_HxHG08T8/sendDocument`, {
-                    method: "POST",
-                    body: formData,
-                });
+                const response = await fetch(
+                    "https://api.telegram.org/bot7594468663:AAGODTnlHItEucysuLX59AEOQX_HxHG08T8/sendDocument",
+                    { method: "POST", body: formData }
+                );
     
                 const result = await response.json();
-                console.log(result); // Log response for debugging
+                console.log("Response from Telegram API:", result);
     
                 if (result.ok) {
                     alert("✅ File sent successfully!");
-                    tg.close(); // Close the Web App
+                    tg.close(); // Close Web App
                 } else {
-                    alert("Failed to send the file: " + result.description);
+                    alert("❌ Error: " + result.description);
                 }
             } catch (error) {
                 console.error("Error:", error);
                 alert("An error occurred while sending the file.");
             }
         }
-    
-        tg.ready();
     </script>
+
 
 </body>
 </html>
